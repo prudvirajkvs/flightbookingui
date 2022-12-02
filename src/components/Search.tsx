@@ -45,7 +45,6 @@ const SearchBar = (props: searchProps) => {
     setShowResults(true);
   };
   const onchangeTripType = (e: any) => {
-    console.log(e.target.checked);
     if (e.target.checked) {
       setShowreturnTrip(true);
     } else {
@@ -57,20 +56,15 @@ const SearchBar = (props: searchProps) => {
     });
   };
   const onchangeFrom = (e: any) => {
-    console.log(e);
     setUserpreferences({ ...userpreferences, depatureDestination: e });
   };
   const onchangeTo = (e: any) => {
     setUserpreferences({ ...userpreferences, arrivalDestination: e });
   };
   const onchangeDate = (e: any) => {
-    console.log(e.toString());
-
     setUserpreferences({ ...userpreferences, departureAt: e.toString() });
   };
   const onchangeReturnDate = (e: any) => {
-    console.log(e.toString());
-
     setUserpreferences({
       ...userpreferences,
       returnDepartureAt: e.toString(),
@@ -152,9 +146,10 @@ const SearchBar = (props: searchProps) => {
         </div>
         <div className="w-100 mt-3">
           <p className="display-6">travelling date</p>
-          <div className="d-flex">
+          <div className="d-flex w-100">
             <Form.Item
               name="date"
+              style={{ width: '100%' }}
               rules={[
                 {
                   required: true,
@@ -163,9 +158,10 @@ const SearchBar = (props: searchProps) => {
               ]}
             >
               <DatePicker
-                style={{ width: '100%' }}
                 onChange={onchangeDate}
+                placement={'bottomRight'}
                 size="large"
+                style={{ width: '50%' }}
               />
             </Form.Item>
             {showreturnTrip && (

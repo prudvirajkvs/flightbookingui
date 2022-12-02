@@ -5,7 +5,6 @@ import prefetch from './api/prefetch';
 import { prefetchDispatcher } from './reducers/dispatchActions';
 import { Typography } from 'antd';
 import store from './store/store';
-import { Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import BookTicket from './components/BookTicket';
 const FlightSearchResults = React.lazy(
@@ -13,11 +12,10 @@ const FlightSearchResults = React.lazy(
 );
 const { Title, Text } = Typography;
 function App() {
-  const [first, setFirst] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showResults, setshowResults] = useState(false);
   const [Options, setOptions] = useState({} as any);
-  const [isbooking, setIsBooking] = useState(false);
+  const [booking, setBooking] = useState({ isbooking: false } as any);
   const dispatch = store.dispatch;
   const state = useSelector((state: any) => state);
   console.log(state);
@@ -48,8 +46,8 @@ function App() {
 
     getOptions();
   }, []);
-  if (isbooking) {
-    return <BookTicket setIsBooking={setIsBooking} />;
+  if (booking?.isbooking) {
+    return <BookTicket setBooking={setBooking} booking={booking} />;
   }
   return (
     // <Route path="/">
@@ -74,7 +72,7 @@ function App() {
       {showResults && (
         <React.Suspense fallback={<LoadingScreen />}>
           <>
-            <FlightSearchResults setIsBooking={setIsBooking} />;
+            <FlightSearchResults setBooking={setBooking} />;
           </>
         </React.Suspense>
       )}
