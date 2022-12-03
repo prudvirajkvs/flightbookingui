@@ -147,39 +147,45 @@ const SearchBar = (props: searchProps) => {
         <div className="w-100 mt-3">
           <p className="display-6">travelling date</p>
           <div className="d-flex w-100">
-            <Form.Item
-              name="date"
-              style={{ width: '100%' }}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input date of travel',
-                },
-              ]}
-            >
-              <DatePicker
-                onChange={onchangeDate}
-                placement={'bottomRight'}
-                size="large"
-                style={{ width: '50%' }}
-              />
-            </Form.Item>
-            {showreturnTrip && (
+            <div className="me-3 w-100">
               <Form.Item
-                name="returndate"
+                name="date"
+                style={{ width: '100%' }}
                 rules={[
                   {
                     required: true,
-                    message: 'Please input return date of travel',
+                    message: 'Please input date of travel',
                   },
                 ]}
               >
                 <DatePicker
-                  style={{ width: '100%' }}
-                  onChange={onchangeReturnDate}
+                  onChange={onchangeDate}
+                  placement={'bottomLeft'}
                   size="large"
+                  style={{ width: '100%' }}
                 />
               </Form.Item>
+            </div>
+            {showreturnTrip && (
+              <div className=" w-100">
+                <Form.Item
+                  style={{ width: '100%' }}
+                  name="returndate"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input return date of travel',
+                    },
+                  ]}
+                >
+                  <DatePicker
+                    style={{ width: '100%' }}
+                    onChange={onchangeReturnDate}
+                    placement={'bottomLeft'}
+                    size="large"
+                  />
+                </Form.Item>
+              </div>
             )}
           </div>
         </div>

@@ -3,17 +3,26 @@ import { Button, Form, Input, message, notification } from 'antd';
 import store from '../store/store';
 import TicketForm from './TcketForm';
 import BookingConfirmApi from '../api/BookingConfirmApi';
+import {
+  saveConfirmedTkts,
+  savePersonalDetails,
+} from '../reducers/dispatchActions';
+import ConfirmPage from './ConfirmPage';
 interface BookTicketProps {
   setBooking: any;
   booking: any;
+  confirmTkts: any;
+  setConfirmTkts: any;
 }
 const BookTicket = (props: BookTicketProps) => {
-  const { setBooking, booking } = props;
+  const { setBooking, booking, confirmTkts, setConfirmTkts } = props;
   const userpreferences: any = store.getState().userpreferences;
-
+  const prevPersonalData: any = store.getState().personalDetails;
+  const prevTickets: any = store.getState().confirmedtkts;
   const [ticketForms, setTicketForms] = useState([] as any);
   const [ticketData, setTicketData] = useState([] as any);
-  const [personalData, setPersonalData] = useState({} as any);
+  const [personalData, setPersonalData] = useState(prevPersonalData as any);
+  const dispatch = store.dispatch;
 
   const getTotalPrice = () => {
     let price = 0;
@@ -34,14 +43,20 @@ const BookTicket = (props: BookTicketProps) => {
       ticketData,
       flight: booking.flight,
     }).then((res) => {
-      let confirmedtkts = res.data;
+      console.log({ res });
+      let confirmedtkts = res;
       notification.success({
         message:
           'ticket confirmation recieved please check your bookings for additional details',
       });
+      setConfirmTkts({
+        isConfirmed: true,
+        tickets: [...prevTickets, ...confirmedtkts],
+      });
+      saveConfirmedTkts(dispatch, [...prevTickets, ...confirmedtkts]);
       setBooking({ isbooking: false });
     });
-
+    savePersonalDetails(dispatch, personalData);
     console.log({ personalData, ticketData, flight: booking.flight });
   };
   const OnDelete = (e: number) => {
@@ -102,6 +117,16 @@ const BookTicket = (props: BookTicketProps) => {
       phone: e.target.value,
     });
   };
+  // if (confirmTkts.isConfirmed) {
+  //   return (
+  //     <ConfirmPage
+  //       confirmedTkts={confirmTkts}
+  //       setConfirmTkts={setConfirmTkts}
+  //       setBooking={setBooking}
+  //       flight={booking.flight}
+  //     />
+  //   );
+  // }
   return (
     <div className="container bg-light">
       <div className="d-flex justify-content-between align-items-end mt-3">
@@ -118,65 +143,78 @@ const BookTicket = (props: BookTicketProps) => {
         onFinishFailed={() => {}}
         autoComplete="off"
       >
-        <div className="d-flex justify-content-between">
-          <Form.Item
-            name="firstname"
-            label="First Name"
-            style={{ width: '100%', marginRight: 10 }}
-            rules={[{ required: true, message: 'Please input from location' }]}
-          >
-            <Input placeholder="First Name" onChange={onNameChange} />
-          </Form.Item>
-          <Form.Item
-            name="secondname"
-            label="Midlle Name"
-            style={{ width: '100%', marginRight: 10 }}
-            rules={[{ required: false, message: 'Please input from location' }]}
-          >
-            <Input placeholder="Middle Name" onChange={onMiddleNameChange} />
-          </Form.Item>
-          <Form.Item
-            name="lastname"
-            label="Last Name"
-            style={{ width: '100%' }}
-            rules={[{ required: true, message: 'Please input from location' }]}
-          >
-            <Input placeholder="Last Name" onChange={onLastNameChange} />
-          </Form.Item>
-        </div>
-        <div className="d-flex justify-content-between">
-          <Form.Item
-            name="email"
-            label="email"
-            style={{ width: '70%', marginRight: 10 }}
-            rules={[
-              {
-                required: true,
-                message: 'Please enter valid email',
-                type: 'email',
-              },
-            ]}
-          >
-            <Input placeholder="email" onChange={onEmailChange} />
-          </Form.Item>
-          <Form.Item
-            name="Phone"
-            label="Phone"
-            style={{ width: '30%' }}
-            rules={[
-              {
-                required: true,
-                message: 'Please enter valid phone number',
-              },
-            ]}
-          >
-            <Input
-              placeholder="Last Name"
-              type="number"
-              onChange={onPhonechange}
-            />
-          </Form.Item>
-        </div>
+        {!Object.keys(prevPersonalData).length && (
+          <>
+            <div className="d-flex justify-content-between">
+              <Form.Item
+                name="firstname"
+                label="First Name"
+                style={{ width: '100%', marginRight: 10 }}
+                rules={[
+                  { required: true, message: 'Please input from location' },
+                ]}
+              >
+                <Input placeholder="First Name" onChange={onNameChange} />
+              </Form.Item>
+              <Form.Item
+                name="secondname"
+                label="Midlle Name"
+                style={{ width: '100%', marginRight: 10 }}
+                rules={[
+                  { required: false, message: 'Please input from location' },
+                ]}
+              >
+                <Input
+                  placeholder="Middle Name"
+                  onChange={onMiddleNameChange}
+                />
+              </Form.Item>
+              <Form.Item
+                name="lastname"
+                label="Last Name"
+                style={{ width: '100%' }}
+                rules={[
+                  { required: true, message: 'Please input from location' },
+                ]}
+              >
+                <Input placeholder="Last Name" onChange={onLastNameChange} />
+              </Form.Item>
+            </div>
+            <div className="d-flex justify-content-between">
+              <Form.Item
+                name="email"
+                label="email"
+                style={{ width: '70%', marginRight: 10 }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter valid email',
+                    type: 'email',
+                  },
+                ]}
+              >
+                <Input placeholder="email" onChange={onEmailChange} />
+              </Form.Item>
+              <Form.Item
+                name="Phone"
+                label="Phone"
+                style={{ width: '30%' }}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter valid phone number',
+                  },
+                ]}
+              >
+                <Input
+                  placeholder="Last Name"
+                  type="number"
+                  onChange={onPhonechange}
+                />
+              </Form.Item>
+            </div>
+          </>
+        )}
         <hr />
         <p>
           Travel from :

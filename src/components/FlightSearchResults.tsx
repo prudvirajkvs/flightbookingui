@@ -102,7 +102,12 @@ const FlightSearchResults = (props: searchResultsProps) => {
                     <p>Availabale seats : {flight.avaliableSeats} </p>
                     <h6>Price : {flight.prices[0].adult}</h6>
                     <div className="d-flex w-100 justify-content-end">
-                      <Button type="primary">Book</Button>
+                      <Button
+                        type="primary"
+                        onClick={() => clickHandle(flight)}
+                      >
+                        Book
+                      </Button>
                     </div>
                   </Card>
                 )
@@ -130,7 +135,12 @@ const FlightSearchResults = (props: searchResultsProps) => {
                     <p>Availabale seats : {flight.avaliableSeats} </p>
                     <h6>price : {flight.prices[0].adult}</h6>
                     <div className="d-flex w-100 justify-content-end">
-                      <Button type="primary">Book</Button>
+                      <Button
+                        type="primary"
+                        onClick={() => clickHandle(flight)}
+                      >
+                        Book
+                      </Button>
                     </div>
                   </Card>
                 )
